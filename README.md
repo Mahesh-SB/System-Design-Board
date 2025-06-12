@@ -1,10 +1,10 @@
-# System-Design - Uber : Class, interface and Enumerations
+# Uber
 
 ## HLD
 
 ![image](https://github.com/user-attachments/assets/d5885eb9-7ffe-4beb-86f8-bb65f0b05227)
 
-
+## Class, interface and Enumerations
 ## Class
 1. User.
 2. CabDetail.

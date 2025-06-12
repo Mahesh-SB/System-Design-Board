@@ -33,4 +33,5 @@
 12. POST   /rides/{rideId}/cancel
 13. POST   /rides/{rideId}/end
 
-    
+### Note : "pickup=lat,lng" 
+For ',' seprated lat and lng in query string use them as a class properties.  

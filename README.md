@@ -1,6 +1,6 @@
-# System-Design-Board
+# System-Design-Board : Class, interface and Enumerations
 
-## Class, interface and Enumerations
+## HLD
 
 ![image](https://github.com/user-attachments/assets/d5885eb9-7ffe-4beb-86f8-bb65f0b05227)
 

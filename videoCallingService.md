@@ -33,3 +33,5 @@ Fallback mechanisms are crucial for reliability.
 
 ✅ Summary
 NAT traversal is about helping two devices behind firewalls/NATs find a way to talk directly or fall back to relaying via TURN servers. Without it, video calls would often fail or degrade.
+
+resource link : https://www.youtube.com/watch?v=G32ThJakeHk&list=PLhgw50vUymyckXl3D1IlXoVl94wknJfUC&index=4&t=2340s

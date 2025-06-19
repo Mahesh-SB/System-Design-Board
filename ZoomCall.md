@@ -1,2 +1,2 @@
 ## HLD
-![HLD-Diagram](https://github.com/user-attachments/assets/21f62427-cf50-4439-943f-7f4adff51dd6)
+![HLD-Diagram](https://github.com/user-attachments/assets/b1484efb-981d-4cb0-8280-8c21e402d7c6)

@@ -20,7 +20,7 @@ Time | Action by T1          | Locking Phase        | Notes
  T4  | Try to Acquire lock B | ❌ Not Allowed      | Violates 2PL (cannot acquire after releasing)
 
 ###  In SQL (2PL-like behavior) 
-
+```
 -- Pseudocode for Transaction T1
 BEGIN;
 
@@ -34,6 +34,7 @@ COMMIT;  -- Imagine this commit just applies changes to A and doesn't end transa
 
 -- Later try to lock B (invalid in 2PL)
 SELECT * FROM transactions WHERE id = 2 FOR UPDATE; -- ❌ Not allowed in 2PL now
+```
 
 #### What happens with Update after the commit ?
 The second UPDATE will either:
@@ -65,7 +66,7 @@ Time | Action by T1                | Phase           | Lock State
 
 
 ###  In SQL (Strict 2PL-like behavior) 
-
+```
 BEGIN TRANSACTION;
 
 -- Locks A for writing
@@ -75,3 +76,4 @@ UPDATE accounts SET balance = balance + 100 WHERE id = 2;
 
 -- Locks are still held here
 COMMIT;  -- 🔓 All locks released now
+```

@@ -1,6 +1,77 @@
-# 🔐 Pessimistic Concurrency Control: Two-Phase Locking (2PL)
+# 🔐 Pessimistic Concurrency Control Methods
 
-## how can start releasing lock in Two-Phase Locking(2PL) ?
+## 1. Shared Lock / Read Lock (S-Lock)
+A Shared Lock (S-Lock) allows multiple transactions to read a resource but not modify it. However, no transaction can write to it until all shared locks are released.
+
+### SQL Example Using SELECT ... WITH (HOLDLOCK, ROWLOCK) in SQL Server
+
+```
+BEGIN TRANSACTION;
+
+-- Transaction 1
+SELECT * 
+FROM Employees WITH (HOLDLOCK, ROWLOCK)
+WHERE EmployeeID = 101;
+
+-- HOLDLOCK is like a shared lock held until the transaction completes
+-- ROWLOCK ensures row-level locking
+
+-- Wait here and do not commit yet
+-- Simulate a delay
+WAITFOR DELAY '00:00:10';
+
+COMMIT;
+
+```
+At the same time, if another transaction tries to write to that row:
+
+```
+-- Transaction 2 (running in parallel)
+BEGIN TRANSACTION;
+
+UPDATE Employees
+SET Salary = 60000
+WHERE EmployeeID = 101;
+
+COMMIT;
+
+```
+🔄 What happens?
+The UPDATE in Transaction 2 will block until Transaction 1 commits.
+This is because the shared lock from Transaction 1 blocks exclusive locks required by Transaction 2.
+
+
+## 2. Write Lock / Exclusive Lock (X-Lock)
+
+An Exclusive Lock (X-Lock) prevents any other transaction from reading or writing the locked resource until the lock is released (i.e., the transaction is committed or rolled back). It is typically used during UPDATE, DELETE, or INSERT.
+
+```
+BEGIN TRANSACTION;
+
+-- Transaction 1: Acquire an exclusive lock on the row
+UPDATE Employees
+SET Salary = 75000
+WHERE EmployeeID = 101;
+
+-- This locks the row exclusively until COMMIT
+WAITFOR DELAY '00:00:10';  -- Simulate a long transaction
+
+COMMIT;
+
+```
+🧠 During this time:
+```
+-- Transaction 2 (better example): This will BLOCK until X-lock is released
+SELECT * 
+FROM Employees WITH (HOLDLOCK)
+WHERE EmployeeID = 101;
+
+```
+
+
+## 3. Two-Phase Locking Protocol (2PL)
+
+### how can start releasing lock in Two-Phase Locking(2PL) ?
 Two-Phase Locking (2PL) can start releasing locks in the shrinking phase, while still running — something that is not allowed in Strict 2PL.
 
 

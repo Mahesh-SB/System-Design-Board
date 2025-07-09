@@ -9,7 +9,7 @@ In distributed systems, multiple users or services often access and modify share
 4. Violations of ACID/BASE properties
 Concurrency Control ensures correct and consistent execution of transactions — even when they span across multiple nodes.
 
-🔑 Key Goals
+### 🔑 Key Goals
 1. Maintain consistency
 2. Preserve isolation
 3. Avoid conflicts (write-write, read-write)

@@ -43,9 +43,9 @@ If validation succeeds, changes are written to the database.
 Otherwise, the transaction is rolled back.
 
 ### 📌 Validation Rules:
-Let Tᵢ be the current transaction and Tⱼ be any other transaction that committed before Tᵢ’s validation:
-If Tⱼ finished before Tᵢ started, no conflict.
-If Tⱼ and Tᵢ overlapped, Tⱼ must not have written to any data that Tᵢ read.
+1. Let Tᵢ be the current transaction and Tⱼ be any other transaction that committed before Tᵢ’s validation:
+2. If Tⱼ finished before Tᵢ started, no conflict.
+3. If Tⱼ and Tᵢ overlapped, Tⱼ must not have written to any data that Tᵢ read.
 
 
 ## 🔁 3. Version-Based Method (Multiversion OCC)

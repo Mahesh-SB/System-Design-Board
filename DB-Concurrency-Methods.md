@@ -1,4 +1,76 @@
+# System Design: Concurrency Control in Distributed Systems
+Concurrency control is essential in distributed systems to maintain data integrity, consistency, and user trust. The choice of mechanism depends on system characteristics, like read/write ratio, consistency level, and fault tolerance needs.
+
+### 🚀 Why Concurrency Control?
+In distributed systems, multiple users or services often access and modify shared data concurrently across different nodes. Without proper control, this can lead to:
+1. Lost updates
+2. Dirty reads
+3. Inconsistent data states
+4. Violations of ACID/BASE properties
+Concurrency Control ensures correct and consistent execution of transactions — even when they span across multiple nodes.
+
+🔑 Key Goals
+1. Maintain consistency
+2. Preserve isolation
+3. Avoid conflicts (write-write, read-write)
+4. Ensure serializability — transactions appear to run one after another
+
+# Optimistic Concurrency Control Methods
+Optimistic Concurrency Control (OCC) uses validation-based approaches to ensure data consistency without using locks. There are three main OCC methods based on how the system validates transactions before committing:
+
+
+## 🧠 1. Timestamp Ordering Method
+Each transaction gets a unique timestamp when it starts.
+
+Reads and writes are compared against other transactions’ timestamps.
+
+A transaction is aborted if it tries to read or write stale data (i.e., data modified by a newer transaction).
+
+📌 Example:
+T1 (timestamp = 10) reads X.
+T2 (timestamp = 20) updates X.
+T1 tries to commit → fails, because X was changed by a newer transaction.
+
+
+## 🧪 2. Validation-Based Method (also called "Three-Phase Validation")
+This is the classic OCC algorithm, with three phases:
+🔹 a) Read Phase:
+The transaction reads and works on local copies (no updates to the database yet).
+🔹 b) Validation Phase:
+The system checks if the data read by the transaction has been modified by others since the read began.
+🔹 c) Write Phase:
+If validation succeeds, changes are written to the database.
+Otherwise, the transaction is rolled back.
+
+### 📌 Validation Rules:
+Let Tᵢ be the current transaction and Tⱼ be any other transaction that committed before Tᵢ’s validation:
+If Tⱼ finished before Tᵢ started, no conflict.
+If Tⱼ and Tᵢ overlapped, Tⱼ must not have written to any data that Tᵢ read.
+
+
+## 🔁 3. Version-Based Method (Multiversion OCC)
+This method uses multiple versions of a data item, each tagged with a timestamp/version.
+Transactions read a consistent snapshot (like Snapshot Isolation).
+Writes create a new version.
+Validation ensures no conflicting writes occurred since the read.
+
+📌 Used in:
+1. PostgreSQL
+2. Oracle
+3. MVCC databases
+
+### 🧾 Summary Table
+
+| Method               | Key Idea                            | Pros                                  | Cons                           |
+| -------------------- | ----------------------------------- | ------------------------------------- | ------------------------------ |
+| Timestamp Ordering   | Uses timestamps to order events     | Simple and deterministic              | Can lead to many aborts        |
+| Validation-Based     | Validates before committing         | Avoids unnecessary locking            | Costly validation phase        |
+| Version-Based (MVCC) | Uses versions to maintain snapshots | Great for read-heavy, low-conflict DB | Needs more storage and cleanup |
+
+
+
 # 🔐 Pessimistic Concurrency Control Methods
+
 
 ## 1. Shared Lock / Read Lock (S-Lock)
 A Shared Lock (S-Lock) allows multiple transactions to read a resource but not modify it. However, no transaction can write to it until all shared locks are released.

@@ -220,3 +220,65 @@ UPDATE accounts SET balance = balance + 100 WHERE id = 2;
 -- Locks are still held here
 COMMIT;  -- 🔓 All locks released now
 ```
+
+## 🔐 Isolation Levels in SQL Server.
+Isolation levels define how transactions interact with each other — especially how they read/write shared data — and help balance data consistency and performance.
+SQL Server supports five isolation levels, each with different behavior around concurrency and locking.
+
+🔢 List of Isolation Levels
+
+| Isolation Level      | Dirty Read   | Non-Repeatable Read   | Phantom Read   | Locking Behavior                           |
+| -------------------- | -------------| ----------------------| -------------- | ------------------------------------------ |
+| **Read Uncommitted** | ✅ Allowed   | ✅ Allowed           | ✅ Allowed    | No shared locks                            |
+| **Read Committed**   | ❌ Prevented | ✅ Allowed           | ✅ Allowed    | Shared locks held during read              |
+| **Repeatable Read**  | ❌ Prevented | ❌ Prevented         | ✅ Allowed    | Shared locks held until end of transaction |
+| **Serializable**     | ❌ Prevented | ❌ Prevented         | ❌ Prevented  | Range locks + shared locks held till end   |
+| **Snapshot**         | ❌ Prevented | ❌ Prevented         | ❌ Prevented  | Uses versioning, no blocking               |
+
+
+### 📖 What Each Term Means
+**Dirty Read**: Reading uncommitted changes from another transaction.
+**Non-Repeatable Read**: Same query returns different results within a transaction (due to updates by others).
+**Phantom Read**: New rows appear when the same query is re-run within a transaction (due to inserts by others).
+
+## Multiple Granularity Locking (MGL) : This concept is related with Pessimistic Concurrency Control Methods Shared and Exclusive Lock
+In SQL Server is a concurrency control mechanism that allows the system to manage locks at different levels of a database hierarchy — for example, from the entire database down to individual rows.
+SQL Server organizes data hierarchically:
+```
+Database → File → Table → Page → Row
+
+```
+
+| Lock Type                                 | Meaning                                                                             |
+| ----------------------------------------- | ----------------------------------------------------------------------------------- |
+| **IS (Intention Shared)**                 | A transaction intends to take shared locks at a lower level.                        |
+| **IX (Intention Exclusive)**              | A transaction intends to take exclusive locks at a lower level.                     |
+| **S (Shared)**                            | A transaction reads data. Other transactions can also read.                         |
+| **X (Exclusive)**                         | A transaction wants to modify data. No other access is allowed.                     |
+| **SIX (Shared with Intention Exclusive)** | Shared lock at current level and intention to take exclusive locks at lower levels. |
+
+### 🔐 SQL Server Lock Types (Summary)
+
+| Lock Type | Full Form            | Purpose                                                      |
+| --------- | -------------------- | ------------------------------------------------------------ |
+| **S**     | Shared               | For reading (SELECT)                                         |
+| **X**     | Exclusive            | For writing (INSERT, UPDATE, DELETE)                         |
+| **IS**    | Intent Shared        | Indicates **intention** to acquire S lock at lower level     |
+| **IX**    | Intent Exclusive     | Indicates **intention** to acquire X lock at lower level     |
+| **SIX**   | Shared with Intent X | Acquires **S lock on current level** + **IX at lower level** |
+
+
+### ✅ Here's the hierarchy and How All Fit Together
+
+```
+[You]
+└──> Isolation Level (e.g., SERIALIZABLE)
+      └──> SQL Server Lock Manager
+             ├──> Uses Two-Phase Locking Protocol (2PL)
+             └──> Uses Multiple Granularity Locking (MGL)
+                     ├──> Intent Locks (IS, IX)
+                     └──> Actual Locks (S, X)
+
+
+```
+#### Note : All the information shared in this article is based on my personal research and the questions that arose during my learning process. I encourage you to explore further and form your own conclusions — and I’d love to hear your thoughts or insights as well.

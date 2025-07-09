@@ -1,3 +1,5 @@
+# 🔐 Pessimistic Concurrency Control: Two-Phase Locking (2PL)
+
 ## how can start releasing lock in Two-Phase Locking(2PL) ?
 Two-Phase Locking (2PL) can start releasing locks in the shrinking phase, while still running — something that is not allowed in Strict 2PL.
 
@@ -41,8 +43,9 @@ Fail or throw an error if the DB requires explicit transactions
 
 
 
-## how can start releasing lock in Strict Two-Phase Locking(2PL) ?
 
+## how can start releasing lock in Strict Two-Phase Locking(2PL) ?
+Strict Two-Phase Locking is a special case of 2PL.
 🔒 All locks are held until the transaction COMMITs or ABORTs — even if the transaction is "done" with the data.
 
 
@@ -63,7 +66,7 @@ Time | Action by T1                | Phase           | Lock State
 
 ###  In SQL (Strict 2PL-like behavior) 
 
-`BEGIN TRANSACTION;
+BEGIN TRANSACTION;
 
 -- Locks A for writing
 UPDATE accounts SET balance = balance - 100 WHERE id = 1;
@@ -71,4 +74,4 @@ UPDATE accounts SET balance = balance - 100 WHERE id = 1;
 UPDATE accounts SET balance = balance + 100 WHERE id = 2;
 
 -- Locks are still held here
-COMMIT;  -- 🔓 All locks released now`
+COMMIT;  -- 🔓 All locks released now

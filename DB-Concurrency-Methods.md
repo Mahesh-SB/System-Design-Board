@@ -259,13 +259,62 @@ Database → File → Table → Page → Row
 
 ### 🔐 SQL Server Lock Types (Summary)
 
-| Lock Type | Full Form            | Purpose                                                      |
-| --------- | -------------------- | ------------------------------------------------------------ |
-| **S**     | Shared               | For reading (SELECT)                                         |
-| **X**     | Exclusive            | For writing (INSERT, UPDATE, DELETE)                         |
-| **IS**    | Intent Shared        | Indicates **intention** to acquire S lock at lower level     |
-| **IX**    | Intent Exclusive     | Indicates **intention** to acquire X lock at lower level     |
-| **SIX**   | Shared with Intent X | Acquires **S lock on current level** + **IX at lower level** |
+| Lock Type | Table | Page | Row | Description                                 |
+| --------- | ----- | ---- | --- | ------------------------------------------- |
+| **S**     | ✅     | ✅    | ✅   | SELECT, read-only                           |
+| **X**     | ✅     | ✅    | ✅   | UPDATE, DELETE, INSERT                      |
+| **IS**    | ✅     | ✅    | ❌   | Declares intent to acquire S on lower level |
+| **IX**    | ✅     | ✅    | ❌   | Declares intent to acquire X on lower level |
+| **SIX**   | ✅     | ❌    | ❌   | S on table + IX on rows/pages underneath    |
+
+
+#### 🔍 Examples
+
+🧵 Scenario 1: SELECT a row
+```
+SELECT * FROM Employees WHERE ID = 1;
+```
+1. Row level: S lock
+2. Page level (if needed): IS
+3. Table level: IS
+
+🧵 Scenario 2: UPDATE a row
+```
+UPDATE Employees SET Name = 'Mahesh' WHERE ID = 1;
+```
+1. Row level: X lock
+2. Page level: IX
+3. Table level: IX
+
+🧵 Scenario 3: SELECT entire table (e.g. full scan)
+```
+SELECT * FROM Employees;
+```
+1. Table level: S
+2. Page & Row: Possibly S (or escalated to table-level S)
+
+🧵 Scenario 4: Mixed Read + Write
+```
+SELECT * FROM Employees WHERE Department = 'IT';
+UPDATE Employees SET Salary = Salary + 1000 WHERE Department = 'IT';
+```
+1. Table level: SIX
+(Shared access for reading + Intent Exclusive for writing rows)
+
+### 📌 Lock Escalation
+If too many row/page locks, SQL Server may escalate to a table-level lock.
+It replaces many small locks with one large lock for performance.
+
+✅ Summary Table
+
+| Lock Type | Table | Page | Row | Intent? | Used For             |
+| --------- | ----- | ---- | --- | ------- | -------------------- |
+| S         | ✅     | ✅    | ✅   | ❌       | Read                 |
+| X         | ✅     | ✅    | ✅   | ❌       | Write                |
+| IS        | ✅     | ✅    | ❌   | ✅       | Before S on row/page |
+| IX        | ✅     | ✅    | ❌   | ✅       | Before X on row/page |
+| SIX       | ✅     | ❌    | ❌   | ✅       | Read + Write mix     |
+
 
 
 ### ✅ Here's the hierarchy and How All Fit Together

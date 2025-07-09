@@ -315,9 +315,11 @@ It replaces many small locks with one large lock for performance.
 | IX        | ✅     | ✅    | ❌   | ✅       | Before X on row/page |
 | SIX       | ✅     | ❌    | ❌   | ✅       | Read + Write mix     |
 
+~~~
+"Intent" = A signal to SQL Server that the transaction intends to acquire specific locks at a lower level (row or page).
+~~~
 
-
-### ✅ Here's the hierarchy and How All Fit Together
+## ✅ Here's the hierarchy and How All Fit Together
 
 ```
 [You]

@@ -154,3 +154,4 @@ grant_type=authorization_code
 | `/authorize` | Frontend redirect | `response_type`, `client_id`, `redirect_uri`, `scope`, `state`, `code_challenge`, `code_challenge_method` |
 | `/token`     | Backend POST      | `grant_type`, `code`, `redirect_uri`, `client_id`, `code_verifier`                                        |
 
+#### Note : All the information shared in this article is based on my personal research and the questions that arose during my learning process. I encourage you to explore further and form your own conclusions — and I’d love to hear your thoughts or insights as well.
